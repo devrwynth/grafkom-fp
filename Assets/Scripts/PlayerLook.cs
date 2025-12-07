@@ -16,6 +16,10 @@ public class PlayerLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Jika game di-pause (Time.timeScale == 0), jangan proses input mouse
+        if (Time.timeScale == 0f) return;
+
+        // Mendapatkan input mouse
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
@@ -24,5 +28,20 @@ public class PlayerLook : MonoBehaviour
         
         transform.localRotation = Quaternion.Euler(xRotation,0f,0f);
         playerBody.Rotate(Vector3.up * mouseX);
+    }
+
+    // Fungsi publik baru untuk mengontrol kursor
+    public void SetCursorLock(bool locked)
+    {
+        if (locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
