@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float movementSpeed = 0;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float jumpHeight = 2f;
+    [SerializeField] float movementSmoothTime = 0.5f;
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.8f;
@@ -15,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
     bool isJumping;
+    Vector3 currentMoveVelocity;
+    Vector3 moveDampVelocity;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,12 +35,26 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = false;
         }
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
+        Vector3 PlayerInput = new Vector3(
+            Input.GetAxisRaw("Horizontal"),
+            0,
+            Input.GetAxisRaw("Vertical")
+        );
+        
+        if (PlayerInput.magnitude > 1f)
+        {
+            PlayerInput.Normalize();
+        }
+        Vector3 moveVector = transform.TransformDirection(PlayerInput);
 
-        Vector3 movement = transform.right * x + transform.forward * z;
+        currentMoveVelocity = Vector3.SmoothDamp(
+            currentMoveVelocity,
+            moveVector*movementSpeed,
+            ref moveDampVelocity,
+            movementSmoothTime
 
-        controller.Move(movement * movementSpeed * Time.deltaTime);
+        );
+        controller.Move(currentMoveVelocity * Time.deltaTime);
 
         if (Input.GetButton("Jump") && isGrounded && !isJumping)
         {
