@@ -12,6 +12,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.8f;
     [SerializeField] LayerMask groundLayerMask;
+    [SerializeField] Transform startPosition;
+    [SerializeField] Transform secondPosition;
 
     Vector3 velocity;
     bool isGrounded;
@@ -63,5 +65,14 @@ public class PlayerMovement : MonoBehaviour
         }
         velocity.y += gravity * Time.deltaTime ;
         controller.Move(velocity* Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.O))
+        {
+            transform.position = startPosition.position;
+        }
+        if (Input.GetKey(KeyCode.P))
+        {
+            transform.position = secondPosition.position;
+        }
     }
 }
