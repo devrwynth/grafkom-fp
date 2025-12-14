@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class MenuController : MonoBehaviour
 {
     public void OnStartClick() {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("level1");
     }
 
     public void OnExitClick() {

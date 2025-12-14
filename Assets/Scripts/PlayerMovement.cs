@@ -7,19 +7,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float movementSpeed = 0;
     [SerializeField] float gravity = -9.81f;
     [SerializeField] float jumpHeight = 2f;
-    [SerializeField] float movementSmoothTime = 0.5f;
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.8f;
     [SerializeField] LayerMask groundLayerMask;
-    [SerializeField] Transform startPosition;
-    [SerializeField] Transform secondPosition;
 
     Vector3 velocity;
     bool isGrounded;
     bool isJumping;
-    Vector3 currentMoveVelocity;
-    Vector3 moveDampVelocity;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -37,26 +32,12 @@ public class PlayerMovement : MonoBehaviour
         {
             isJumping = false;
         }
-        Vector3 PlayerInput = new Vector3(
-            Input.GetAxisRaw("Horizontal"),
-            0,
-            Input.GetAxisRaw("Vertical")
-        );
-        
-        if (PlayerInput.magnitude > 1f)
-        {
-            PlayerInput.Normalize();
-        }
-        Vector3 moveVector = transform.TransformDirection(PlayerInput);
+        float x = Input.GetAxisRaw("Horizontal");
+        float z = Input.GetAxisRaw("Vertical");
 
-        currentMoveVelocity = Vector3.SmoothDamp(
-            currentMoveVelocity,
-            moveVector*movementSpeed,
-            ref moveDampVelocity,
-            movementSmoothTime
+        Vector3 movement = transform.right * x + transform.forward * z;
 
-        );
-        controller.Move(currentMoveVelocity * Time.deltaTime);
+        controller.Move(movement * movementSpeed * Time.deltaTime);
 
         if (Input.GetButton("Jump") && isGrounded && !isJumping)
         {
@@ -65,14 +46,5 @@ public class PlayerMovement : MonoBehaviour
         }
         velocity.y += gravity * Time.deltaTime ;
         controller.Move(velocity* Time.deltaTime);
-
-        if (Input.GetKey(KeyCode.O))
-        {
-            transform.position = startPosition.position;
-        }
-        if (Input.GetKey(KeyCode.P))
-        {
-            transform.position = secondPosition.position;
-        }
     }
 }
